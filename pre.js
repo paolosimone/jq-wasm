@@ -1,8 +1,3 @@
-/** @format */
-
-var initialized = false
-var initListeners = []
-
 var stdin = ''
 var inBuffer = []
 var outBuffer = []
@@ -26,17 +21,10 @@ function fromByteArray(data) {
   return decodeURIComponent(escape(str))
 }
 
-// Note about Emscripten, even though the module is now named 'jq', pre.js still uses Module, but post.js uses 'jq'
 Module = Object.assign(
   {
     noInitialRun: true,
     noExitRuntime: true,
-    onRuntimeInitialized: function() {
-      initialized = true
-      initListeners.forEach(function(cb) {
-        cb()
-      })
-    },
     preRun: function() {
       FS.init(
         function input() {

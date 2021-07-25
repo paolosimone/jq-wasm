@@ -1,6 +1,2 @@
 node_modules
-npm-debug.log
-browserify-cache.json
-*.swo
-*.swp
-jq.*
+dist
