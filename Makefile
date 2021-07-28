@@ -4,18 +4,21 @@
 
 EMCC_CFLAGS = -s NO_DYNAMIC_EXECUTION=1 \
 			  -s MODULARIZE=1 \
-			  -s EXPORT_NAME=initJQ \
-			  -s WASM=1 \
-			  --memory-init-file 0 \
+			  -s EXPORT_NAME=newJQ \
 			  -s ALLOW_MEMORY_GROWTH=1 \
-			  -O3 \
-			  --pre-js $(PWD)/pre.js \
-			  --post-js $(PWD)/post.js
+ 			  -s MEMORY_GROWTH_GEOMETRIC_STEP=0.5 \
+			  -s WASM=1 \
+ 			  -s WASM_BIGINT \
+			  -s USE_PTHREADS=0 \
+			  --memory-init-file 0 \
+			  -O2 \
+			  -g1 \
+ 			  -Wno-unused-command-line-argument \
+			  --pre-js $(PWD)/pre.js
 
+# TODO multiple build (web only, min...)
+# https://stackoverflow.com/a/26383350
 all: jq.wasm.js
-
-clean:
-	rm -f dist/*
 
 jq/configure: .gitmodules
 	git submodule update --init
@@ -32,6 +35,9 @@ jq.wasm.js: jq/configure
 	  mkdir -p dist && \
 	  mv jq/jq dist/jq.wasm.js && \
 	  mv jq/jq.wasm dist/jq.wasm
+
+clean:
+	rm -f dist/*
 
 test:
 	yarn test

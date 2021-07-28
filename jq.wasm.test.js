@@ -1,31 +1,24 @@
-const initJQ = require('./dist/jq.wasm.js')
+const newJQ = require('./dist/jq.wasm.js')
 
-
-describe('raw', () => {
-  test('simple', async () => {
-    const jq = await initJQ()
-    const result = await jq.raw('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
-    expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
-  })
-
-  test('multiple call', async () => {
-    const jq = await initJQ()
-
-    var result = await jq.raw('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
-    expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
-
-    result = await jq.raw('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
-    expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
-
-    result = await jq.raw('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
-    expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
-  })  
+test('version', async () => {
+  const jq = await newJQ()
+  const version = jq.invoke('', '--version')
+  expect(version.startsWith("jq-1.6")).toBeTruthy()
 })
 
-describe('json', () => {
-  test('simple', async () => {
-    const jq = await initJQ()
-    const result = jq.json({data: {message: 'This is an emoji test 🙏'}}, '.data')
-    expect(result).toEqual({message: 'This is an emoji test 🙏'})
-  })
-})
+test('multiple call', async () => {
+  const jq = await newJQ()
+
+  var result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
+
+  result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
+
+  result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
+})  
+
+// TODO more complex tests
+// TODO performance tests?
+// TODO test errors

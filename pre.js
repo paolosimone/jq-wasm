@@ -1,56 +1,62 @@
-var stdin = ''
-var inBuffer = []
-var outBuffer = []
-var errBuffer = []
+// TODO comments
 
-function toByteArray(str) {
-  var byteArray = []
-  var encodedStr = unescape(encodeURIComponent(str))
-  for (var i = 0; i < encodedStr.length; i++) {
-    byteArray.push(encodedStr.charCodeAt(i))
+var InputStream = function() {
+  var module = {}
+
+  var bytes = []
+  var cursor = 0
+
+  module.load = function(text) {
+    bytes = new TextEncoder().encode(text)
+    cursor = 0
   }
-  return byteArray
+
+  module.next = function() {
+    return cursor < bytes.length ? bytes[cursor++] : null
+  }
+
+  return module
 }
 
-function fromByteArray(data) {
-  var array = new Uint8Array(data)
-  var str = ''
-  for (var i = 0; i < array.length; ++i) {
-    str += String.fromCharCode(array[i])
+var OutputStream = function() {
+  var module = {}
+
+  var bytes = []
+
+  module.flush = function() {
+    bytes = []
   }
-  return decodeURIComponent(escape(str))
+
+  module.read = function(char) {
+    if (char) bytes.push(char)
+  }
+
+  module.toString = function() {
+    return new TextDecoder().decode(new Uint8Array(bytes)).trim()
+  }
+
+  return module
 }
 
-Module = Object.assign(
-  {
-    noInitialRun: true,
-    noExitRuntime: true,
-    preRun: function() {
-      FS.init(
-        function input() {
-          if (inBuffer.length) {
-            return inBuffer.pop()
-          }
+var stdin = InputStream()
+var stdout = OutputStream()
+var stderr = OutputStream()
 
-          if (!stdin) return null
-          inBuffer = toByteArray(stdin)
-          stdin = ''
-          inBuffer.push(null)
-          inBuffer.reverse()
-          return inBuffer.pop()
-        },
-        function output(c) {
-          if (c) {
-            outBuffer.push(c)
-          }
-        },
-        function error(c) {
-          if (c) {
-            errBuffer.push(c)
-          }
-        }
-      )
-    }
-  },
-  Module
-)
+Module["preRun"] = function() {
+  FS.init(stdin.next, stdout.read, stderr.read)
+}
+
+// TODO promise
+Module["invoke"] = function(jsonString, filter, options = []) {
+  stdin.load(jsonString)
+  stdout.flush()
+  stderr.flush()
+
+  callMain(options.concat(filter))
+
+  // TODO improve error handling
+  return EXITSTATUS ? stderr.toString() : stdout.toString()
+}
+
+Module["noInitialRun"] = true
+Module["noExitRuntime"] = true
