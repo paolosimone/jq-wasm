@@ -13,6 +13,8 @@
   "license": "ISC",
   "homepage": "https://github.com/paolosimone/jq-wasm#readme",
   "devDependencies": {
+    "@node-minify/cli": "^6.2.0",
+    "@node-minify/uglify-js": "^6.2.0",
     "jest": "^27.0.6"
   }
 }

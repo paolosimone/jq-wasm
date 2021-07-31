@@ -1,12 +1,14 @@
-[![npm badge](https://img.shields.io/npm/v/jq-web.svg)](https://www.npmjs.com/package/jq-web) [![Mentioned in Awesome jq](https://awesome.re/mentioned-badge.svg)](https://github.com/fiatjaf/awesome-jq)
+# jq-web-lite
 
-# jq-web
+This is a revamped version of [jq-web](https://github.com/fiatjaf/jq-web), a Javascript/WebAssembly build of [jq](https://github.com/stedolan/jq) made for the browser.
 
-This is a build of [jq](https://github.com/stedolan/jq), the command-line JSON processor in Javascript using [Emscripten](http://kripken.github.io/emscripten-site/) along with a wrapper for making it usable as a library.
+Why Lite?
+- number of supported builds
+- performance (see benchmark?)
 
-It runs in the browser.
+// TODO update the rest of the README
 
-### install and use
+### Quickstart
 
 ```
 npm install jq-web

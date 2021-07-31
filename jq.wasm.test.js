@@ -2,20 +2,20 @@ const newJQ = require('./dist/jq.wasm.js')
 
 test('version', async () => {
   const jq = await newJQ()
-  const version = jq.invoke('', '--version')
+  const version = await jq.invoke('', '--version')
   expect(version.startsWith("jq-1.6")).toBeTruthy()
 })
 
 test('multiple call', async () => {
   const jq = await newJQ()
 
-  var result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  var result = await jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
   expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
 
-  result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  result = await jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
   expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
 
-  result = jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
+  result = await jq.invoke('["a", {"12": "üñìçôdẽ"}]', '.[1]["12"] | {"what?": .}')
   expect(result).toBe(`{\n  "what?": "üñìçôdẽ"\n}`)
 })  
 

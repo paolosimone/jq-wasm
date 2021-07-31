@@ -1,6 +1,5 @@
-// TODO comments
-
-var InputStream = function() {
+// load a string and emit one byte at a time
+var InputBuffer = function() {
   var module = {}
 
   var bytes = []
@@ -18,7 +17,8 @@ var InputStream = function() {
   return module
 }
 
-var OutputStream = function() {
+// receive a byte at a time and convert the result to a string
+var OutputBuffer = function() {
   var module = {}
 
   var bytes = []
@@ -27,7 +27,7 @@ var OutputStream = function() {
     bytes = []
   }
 
-  module.read = function(char) {
+  module.push = function(char) {
     if (char) bytes.push(char)
   }
 
@@ -38,25 +38,42 @@ var OutputStream = function() {
   return module
 }
 
-var stdin = InputStream()
-var stdout = OutputStream()
-var stderr = OutputStream()
+// I/O buffers are initialized only once, so
+// we need to keep the same instance between consecutive runs
+var stdin = InputBuffer()
+var stdout = OutputBuffer()
+var stderr = OutputBuffer()
 
+// initialize I/O buffers 
 Module["preRun"] = function() {
-  FS.init(stdin.next, stdout.read, stderr.read)
+  FS.init(stdin.next, stdout.push, stderr.push)
 }
 
-// TODO promise
+// invoke the jq command like in terminal
+// echo {jsonString} | jq {options} {filter}
 Module["invoke"] = function(jsonString, filter, options = []) {
-  stdin.load(jsonString)
-  stdout.flush()
-  stderr.flush()
+  return new Promise(function (resolve, reject) {
+    try {
+      stdin.load(jsonString)
+      callMain(options.concat(filter))
 
-  callMain(options.concat(filter))
-
-  // TODO improve error handling
-  return EXITSTATUS ? stderr.toString() : stdout.toString()
+      if (EXITSTATUS) {
+        reject(new Error(stderr.toString()))
+      } else {
+        resolve(stdout.toString())
+      }
+    } catch (e) {
+      reject(e)
+    } finally {
+      stdin.load("")
+      stdout.flush()
+      stderr.flush()
+    }
+  })
 }
 
+// prevent running main at startup
 Module["noInitialRun"] = true
+
+// allows multiple calls to main
 Module["noExitRuntime"] = true
