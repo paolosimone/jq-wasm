@@ -1,68 +1,81 @@
-/** @format */
+// load a string and emit one byte at a time
+var InputBuffer = function() {
+  var module = {}
 
-var initialized = false
-var initListeners = []
+  var bytes = []
+  var cursor = 0
 
-var stdin = ''
-var inBuffer = []
-var outBuffer = []
-var errBuffer = []
-
-function toByteArray(str) {
-  var byteArray = []
-  var encodedStr = unescape(encodeURIComponent(str))
-  for (var i = 0; i < encodedStr.length; i++) {
-    byteArray.push(encodedStr.charCodeAt(i))
+  module.load = function(text) {
+    bytes = new TextEncoder().encode(text)
+    cursor = 0
   }
-  return byteArray
+
+  module.next = function() {
+    return cursor < bytes.length ? bytes[cursor++] : null
+  }
+
+  return module
 }
 
-function fromByteArray(data) {
-  var array = new Uint8Array(data)
-  var str = ''
-  for (var i = 0; i < array.length; ++i) {
-    str += String.fromCharCode(array[i])
+// receive a byte at a time and convert the result to a string
+var OutputBuffer = function() {
+  var module = {}
+
+  var bytes = []
+
+  module.flush = function() {
+    bytes = []
   }
-  return decodeURIComponent(escape(str))
+
+  module.push = function(char) {
+    if (char) bytes.push(char)
+  }
+
+  module.toString = function() {
+    return new TextDecoder().decode(new Uint8Array(bytes)).trim()
+  }
+
+  return module
 }
 
-// Note about Emscripten, even though the module is now named 'jq', pre.js still uses Module, but post.js uses 'jq'
-Module = Object.assign(
-  {
-    noInitialRun: true,
-    noExitRuntime: true,
-    onRuntimeInitialized: function() {
-      initialized = true
-      initListeners.forEach(function(cb) {
-        cb()
-      })
-    },
-    preRun: function() {
-      FS.init(
-        function input() {
-          if (inBuffer.length) {
-            return inBuffer.pop()
-          }
+// I/O buffers are initialized only once, so
+// we need to keep the same instance between consecutive runs
+var stdin = InputBuffer()
+var stdout = OutputBuffer()
+var stderr = OutputBuffer()
 
-          if (!stdin) return null
-          inBuffer = toByteArray(stdin)
-          stdin = ''
-          inBuffer.push(null)
-          inBuffer.reverse()
-          return inBuffer.pop()
-        },
-        function output(c) {
-          if (c) {
-            outBuffer.push(c)
-          }
-        },
-        function error(c) {
-          if (c) {
-            errBuffer.push(c)
-          }
-        }
-      )
+// initialize I/O buffers 
+Module["preRun"] = function() {
+  FS.init(stdin.next, stdout.push, stderr.push)
+}
+
+// invoke the jq command like in terminal
+// echo {jsonString} | jq {options} {filter}
+Module["invoke"] = function(jsonString, filter, options = []) {
+  return new Promise(function (resolve, reject) {
+    try {
+      stdin.load(jsonString)
+      callMain(options.concat(filter))
+
+      if (EXITSTATUS) {
+        reject(new Error(stderr.toString()))
+      } else {
+        resolve(stdout.toString())
+      }
+    } catch (e) {
+      reject(e)
+    } finally {
+      stdin.load("")
+      stdout.flush()
+      stderr.flush()
     }
-  },
-  Module
-)
+  })
+}
+
+// prevent running main at startup
+Module["noInitialRun"] = true
+
+// allows multiple calls to main. Default: true
+if (!Module.hasOwnProperty("noExitRuntime")) {
+  Module["noExitRuntime"] = true
+}

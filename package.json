@@ -1,31 +1,20 @@
 {
-  "name": "jq-web",
-  "version": "0.5.1",
-  "description": "a hack that makes jq run in the browser with emscripten.",
-  "main": "jq.asm.bundle.min.js",
+  "name": "jq-wasm",
+  "version": "0.1.0",
+  "description": "Run JQ with WebAssembly",
   "scripts": {
-    "test": "make test"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fiatjaf/jq-web.git"
+    "url": "https://github.com/paolosimone/jq-wasm.git"
   },
-  "keywords": [
-    "emscriptem",
-    "jq",
-    "json",
-    "filter",
-    "path"
-  ],
-  "author": "fiatjaf",
+  "author": "Paolo Simone",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/fiatjaf/jq-web/issues"
-  },
-  "homepage": "https://github.com/fiatjaf/jq-web#readme",
+  "homepage": "https://github.com/paolosimone/jq-wasm#readme",
   "devDependencies": {
-    "tape": "^4.9.1",
-    "uglify-es": "^3.3.9",
-    "live-server": "^1.2.0"
+    "@node-minify/cli": "^6.2.0",
+    "@node-minify/uglify-js": "^6.2.0",
+    "jest": "^27.0.6"
   }
 }
