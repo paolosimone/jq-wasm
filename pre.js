@@ -75,5 +75,7 @@ Module["invoke"] = function(jsonString, filter, options = []) {
 // prevent running main at startup
 Module["noInitialRun"] = true
 
-// allows multiple calls to main
-Module["noExitRuntime"] = true
+// allows multiple calls to main. Default: true
+if (!Module.hasOwnProperty("noExitRuntime")) {
+  Module["noExitRuntime"] = true
+}
