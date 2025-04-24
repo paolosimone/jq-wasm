@@ -1,0 +1,9 @@
+services:
+  emsdk:
+    build: .
+    user: ${UID:-1000}:${GID:-1000}
+    volumes:
+      - ${PWD:?error}:/src
+      - ~/.gitconfig:/home/emscripten/.gitconfig
+      - ~/.ssh:/home/emscripten/.ssh
+    command: sleep infinity
