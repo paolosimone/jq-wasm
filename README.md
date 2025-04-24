@@ -6,11 +6,12 @@ I forked the main project to have more control over the build process and the AP
 
 **Highlights**
 
-- `jq` version 1.6 
+- `jq` version 1.7.1 
 - `emcc` version 4.0.7
 - Straightforward client API
 - Typescript support
 - Docker toolchain setup
+- No Git submodules
 
 ## Quickstart
 
@@ -24,11 +25,11 @@ const output = await jq.invoke('{"jq": {"is": "awesome"}}', ".jq.is")
 
 The easiest way is to download the build output directly from the [releases page](https://github.com/paolosimone/jq-wasm/releases):
 
-| File                 | Description                                                        | 
-|----------------------|--------------------------------------------------------------------|
-| jq.wasm.js           | Javascript interface for interacting with JQ                       | 
-| jq.wasm              | JQ WebAssembly binary, loaded by jq.wasm.js and jq.wasm.min.js     |
-| jq.wasm.d.ts         | Typescript types definition                                        | 
+| File                 | Description                                   | 
+|----------------------|-----------------------------------------------|
+| jq.wasm.js           | Javascript interface for interacting with JQ  | 
+| jq.wasm              | JQ WebAssembly binary, loaded by jq.wasm.js   |
+| jq.wasm.d.ts         | Typescript types definition                   | 
 
 ## Reference
 
@@ -52,7 +53,7 @@ It's equivalent to `echo <input> | jq <options> <filter>`
 Make sure you have [Docker](https://www.docker.com/) installed and then simply
 
 ```bash
-docker compose run --rm emsdk make jq 
+docker compose run --rm emsdk make
 ```
 
 Output files will be in `dist` folder.
@@ -66,16 +67,14 @@ in order to run tests and make sure everything works as expected
 # shorter alias for building jq through docker
 yarn make
 
-# run smoke tests integration tests with Javascript
+# run smoke tests with Javascript
 yarn test
 ```
 
 ## Known issues
 
-#### Error when loading `.wasm` files
-
-By default projects compiled with Emscripten look for `.wasm` files in the same directory that the `.js` file is run from. This causes issues when using webpack because name of the `.wasm` file is altered with a hash and can be placed in a different directory. To fix this problem you can use the [copy-webpack-plugin](https://github.com/webpack-contrib/copy-webpack-plugin) to copy the `jq.wasm` file to the same directory that the webpack bundle is placed.
-
 #### Error when invoking more than once in the browser
 
-The JQ instance in theory can be used more than once. For some yet unknown reason this is not the case when running JQ **in the browser**. The solution at the moment is to create a new instance each time you need it: `newJQ({noExitRuntime: false})`
+The JQ instance in theory can be used more than once. 
+For some unknown reason this is not the case when running JQ **in the browser**. 
+The solution at the moment is to create a new instance each time you need it: `newJQ({noExitRuntime: false})`

@@ -5,7 +5,7 @@
   "scripts": {
     "docker:up": "docker compose up -d && docker compose exec emsdk bash",
     "docker:down": "docker compose down",
-    "make": "docker compose run --rm emsdk make jq ",
+    "make": "docker compose run --rm emsdk make",
     "bump": "yarn upgrade --latest",
     "test": "jest"
   },

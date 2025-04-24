@@ -3,7 +3,7 @@ const newJQ = require('./dist/jq.wasm.js')
 test('version', async () => {
   const jq = await newJQ()
   const version = await jq.invoke('', '--version')
-  expect(version.startsWith("jq-1.6")).toBeTruthy()
+  expect(version).toBe("jq-1.7.1")
 })
 
 test('multiple calls', async () => {
