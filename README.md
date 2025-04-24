@@ -1,12 +1,16 @@
 # jq-wasm
 
-A revamped version of [jq-web](https://github.com/fiatjaf/jq-web), the Javascript/WebAssembly build of [jq](https://github.com/stedolan/jq) 
+A fork of [jq-web](https://github.com/fiatjaf/jq-web), the WebAssembly build of [jq](https://github.com/stedolan/jq).
 
-- Bump JQ version to 1.6 
-- Bump emcc version to 2.0.25
-- Refactor client API
+I forked the main project to have more control over the build process and the API interface, since it's a core component of [Virtual Json Viewer](https://github.com/paolosimone/virtual-json-viewer) browser extension.
+
+**Highlights**
+
+- `jq` version 1.6 
+- `emcc` version 4.0.7
+- Straightforward client API
 - Typescript support
-- Performance improvements
+- Docker toolchain setup
 
 ## Quickstart
 
@@ -16,7 +20,6 @@ const jq = await newJQ()
 const output = await jq.invoke('{"jq": {"is": "awesome"}}', ".jq.is")
 // "awesome"
 ```
-
 ## Installation
 
 The easiest way is to download the build output directly from the [releases page](https://github.com/paolosimone/jq-wasm/releases):
@@ -24,10 +27,8 @@ The easiest way is to download the build output directly from the [releases page
 | File                 | Description                                                        | 
 |----------------------|--------------------------------------------------------------------|
 | jq.wasm.js           | Javascript interface for interacting with JQ                       | 
-| jq.wasm.min.js       | Same as jq.wasm.js, but minified                                   |
 | jq.wasm              | JQ WebAssembly binary, loaded by jq.wasm.js and jq.wasm.min.js     |
 | jq.wasm.d.ts         | Typescript types definition                                        | 
-
 
 ## Reference
 
@@ -48,10 +49,26 @@ It's equivalent to `echo <input> | jq <options> <filter>`
 
 ## Build
 
-1. [Install Emscripten from source](https://kripken.github.io/emscripten-site/docs/tools_reference/emsdk.html)
-1. Clone `jq-wasm` and `cd` into it
-1. Look over the `Makefile` for more Emscripten instructions
-1. `make` (...and go grab a coffe while you wait)
+Make sure you have [Docker](https://www.docker.com/) installed and then simply
+
+```bash
+docker compose run --rm emsdk make jq 
+```
+
+Output files will be in `dist` folder.
+
+### Yarn
+
+It's suggested to also have [Yarn](https://yarnpkg.com/) installed, 
+in order to run tests and make sure everything works as expected
+
+```bash
+# shorter alias for building jq through docker
+yarn make
+
+# run smoke tests integration tests with Javascript
+yarn test
+```
 
 ## Known issues
 
