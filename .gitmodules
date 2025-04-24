@@ -1,4 +1,0 @@
-[submodule "jq"]
-	path = jq
-	url = git@github.com:stedolan/jq.git
-	branch = master
