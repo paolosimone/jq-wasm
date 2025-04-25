@@ -36,8 +36,8 @@ jq-wasm: $(JQ_VERSION)
 
 $(JQ_VERSION):
 	wget https://github.com/jqlang/jq/releases/download/$(JQ_VERSION)/$(JQ_VERSION).tar.gz && \
-	tar -xvzf $(JQ_VERSION).tar.gz && \
-	rm $(JQ_VERSION).tar.gz
+		tar -xvzf $(JQ_VERSION).tar.gz && \
+		rm $(JQ_VERSION).tar.gz
 
 clean:
 	rm -rf jq-* dist/*
