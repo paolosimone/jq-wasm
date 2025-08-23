@@ -1,4 +1,4 @@
-JQ_VERSION=jq-1.7.1
+JQ_VERSION=jq-1.8.1
 
 # For a detailed explanation of EMCC flags:
 # - https://emscripten.org/docs/tools_reference/emcc.html
