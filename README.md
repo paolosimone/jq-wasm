@@ -6,8 +6,8 @@ I forked the main project to have more control over the build process and the AP
 
 **Highlights**
 
-- `jq` version 1.7.1 
-- `emcc` version 4.0.7
+- `jq` version ~1.8 
+- `emcc` version ~4.0
 - Straightforward client API
 - Typescript support
 - Docker toolchain setup
