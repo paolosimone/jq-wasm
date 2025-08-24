@@ -1,6 +1,6 @@
 {
   "name": "jq-wasm",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Run JQ with WebAssembly",
   "scripts": {
     "docker:up": "docker compose up -d && docker compose exec emsdk bash",

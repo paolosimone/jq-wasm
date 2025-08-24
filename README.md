@@ -70,11 +70,3 @@ yarn make
 # run smoke tests with Javascript
 yarn test
 ```
-
-## Known issues
-
-#### Error when invoking more than once in the browser
-
-The JQ instance in theory can be used more than once. 
-For some unknown reason this is not the case when running JQ **in the browser**. 
-The solution at the moment is to create a new instance each time you need it: `newJQ({noExitRuntime: false})`
