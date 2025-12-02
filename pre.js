@@ -34,7 +34,7 @@ Module["preRun"] = function() {
 // Invoke the jq command like in terminal
 // echo {jsonString} > INPUT && jq {options} {filter} INPUT
 const JQ_INPUT = "input.json";
-Module["invoke"] = function(jsonString, filter, options = []) {
+function invokeJQ(jsonString, filter, options = []) {
   return new Promise(function(resolve, reject) {
     try {
       FS.writeFile(JQ_INPUT, jsonString)
@@ -53,6 +53,13 @@ Module["invoke"] = function(jsonString, filter, options = []) {
     }
   })
 }
+
+function jqVersion() {
+  return invokeJQ('', '', ['--version'])
+}
+
+Module["invoke"] = invokeJQ
+Module["version"] = jqVersion
 
 // prevent running main at startup
 Module["noInitialRun"] = true

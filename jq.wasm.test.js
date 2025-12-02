@@ -2,7 +2,7 @@ const newJQ = require('./dist/jq.wasm.js')
 
 test('version', async () => {
   const jq = await newJQ()
-  const version = await jq.invoke('', '--version')
+  const version = await jq.version()
   expect(version).toBe("jq-1.8.1")
 })
 
@@ -17,4 +17,4 @@ test('multiple calls', async () => {
 
   result = await jq.invoke('{"boolean": true, "int": 1}', '.int', ["-e"])
   expect(result).toBe(`1`)
-})  
+})
