@@ -7,12 +7,12 @@
     "docker:down": "docker compose down",
     "make": "docker compose run --rm emsdk make",
     "bump": "yarn upgrade --latest",
-    "test": "jest"
+    "test": "yarn node --experimental-vm-modules $(yarn bin jest)"
   },
   "author": "Paolo Simone",
   "license": "ISC",
   "homepage": "https://github.com/paolosimone/jq-wasm#readme",
   "devDependencies": {
-    "jest": "^30.0.5"
+    "jest": "^30.4.2"
   }
 }
