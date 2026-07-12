@@ -1,4 +1,4 @@
-const newJQ = require('./dist/jq.wasm.js')
+import newJQ from './dist/jq.wasm.mjs'
 
 test('version', async () => {
   const jq = await newJQ()
